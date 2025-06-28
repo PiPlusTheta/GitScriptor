@@ -9,7 +9,7 @@ import {
   Divider,
   Chip
 } from '@mui/material'
-import { GitHub, AutoAwesome } from '@mui/icons-material'
+import { GitHub, AutoAwesome, Rocket, Google } from '@mui/icons-material'
 import RepoInput from '../components/RepoInput'
 import ReadmeViewer from '../components/ReadmeViewer'
 import LoadingSkeleton from '../components/LoadingSkeleton'
@@ -129,106 +129,49 @@ const HomePage: React.FC = () => {
       {/* Hero Section */}
       <Box sx={{ textAlign: 'center', mb: 6 }}>
         <Box sx={{ mb: 4 }}>
-          <Chip 
-            icon={<AutoAwesome />}
-            label="AI-Powered"
-            variant="outlined"
-            size="small"
-            color="primary"
-            sx={{ 
-              mb: 2,
-              transition: 'all 0.3s ease',
-              '&:hover': {
-                transform: 'translateY(-1px) scale(1.05)',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-              },
-              '& .MuiChip-icon': {
-                animation: 'sparkle 2s ease-in-out infinite',
-                '@keyframes sparkle': {
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, mb: 2 }}>
+            <Rocket 
+              sx={{ 
+                color: 'primary.main',
+                animation: 'rocketFloat 3s ease-in-out infinite',
+                '@keyframes rocketFloat': {
                   '0%, 100%': {
-                    transform: 'rotate(0deg) scale(1)',
-                    opacity: 0.8,
+                    transform: 'translateY(0px) rotate(-10deg)',
                   },
                   '50%': {
-                    transform: 'rotate(180deg) scale(1.2)',
-                    opacity: 1,
+                    transform: 'translateY(-10px) rotate(5deg)',
                   },
-                },
-              },
-            }}
-          />
-          
-          {/* Powered by Gemini and Open Source chips */}
-          <Stack 
-            direction={{ xs: 'column', sm: 'row' }} 
-            spacing={2} 
-            justifyContent="center" 
-            sx={{ mb: 2 }}
-          >
-            <Chip 
-              icon={<GitScriptorIcon fontSize="small" animated variant="minimal" sx={{ color: '#ffffff !important' }} />}
-              label="Powered by Gemini AI"
-              size="small"
-              sx={{ 
-                fontWeight: 600,
-                background: 'linear-gradient(-45deg, #3d3b8e, #5a2d7a, #7d4b9c, #2d5f8f)',
-                backgroundSize: '400% 400%',
-                animation: 'geminiChipGradient 6s ease infinite',
-                color: '#ffffff',
-                fontSize: '0.75rem',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
-                boxShadow: '0 4px 20px rgba(61, 59, 142, 0.3)',
-                transition: 'all 0.3s ease',
-                textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)',
-                '@keyframes geminiChipGradient': {
-                  '0%': {
-                    backgroundPosition: '0% 50%',
-                  },
-                  '50%': {
-                    backgroundPosition: '100% 50%',
-                  },
-                  '100%': {
-                    backgroundPosition: '0% 50%',
-                  },
-                },
-                '&:hover': {
-                  transform: 'translateY(-2px) scale(1.05)',
-                  boxShadow: '0 8px 30px rgba(61, 59, 142, 0.5)',
-                  textShadow: '0 2px 4px rgba(0, 0, 0, 0.4)',
                 },
               }}
             />
             <Chip 
-              icon={<GitScriptorIcon fontSize="small" animated variant="minimal" sx={{ color: '#2d2d2d !important' }} />}
-              label="Free & Open Source"
+              icon={<AutoAwesome />}
+              label="AI-Powered"
+              variant="outlined"
               size="small"
+              color="primary"
               sx={{ 
-                fontWeight: 600,
-                background: 'linear-gradient(-45deg, #d4787c, #e0b8c9, #e0b8c9, #e6c79d)',
-                backgroundSize: '400% 400%',
-                animation: 'openSourceGradient 6s ease infinite',
-                color: '#2d2d2d',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
-                boxShadow: '0 4px 15px rgba(212, 120, 124, 0.3)',
                 transition: 'all 0.3s ease',
-                '@keyframes openSourceGradient': {
-                  '0%': {
-                    backgroundPosition: '0% 50%',
-                  },
-                  '50%': {
-                    backgroundPosition: '100% 50%',
-                  },
-                  '100%': {
-                    backgroundPosition: '0% 50%',
-                  },
-                },
                 '&:hover': {
-                  transform: 'translateY(-2px) scale(1.05)',
-                  boxShadow: '0 8px 25px rgba(212, 120, 124, 0.5)',
+                  transform: 'translateY(-1px) scale(1.05)',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                },
+                '& .MuiChip-icon': {
+                  animation: 'pulse 2s ease-in-out infinite',
+                  '@keyframes pulse': {
+                    '0%, 100%': {
+                      transform: 'scale(1)',
+                      opacity: 0.8,
+                    },
+                    '50%': {
+                      transform: 'scale(1.2)',
+                      opacity: 1,
+                    },
+                  },
                 },
               }}
             />
-          </Stack>
+          </Box>
         </Box>
         
         <Typography 
@@ -270,13 +213,100 @@ const HomePage: React.FC = () => {
           sx={{ 
             color: 'text.secondary',
             fontWeight: 400,
-            mb: 4,
+            mb: 3,
             maxWidth: '600px',
             mx: 'auto',
           }}
         >
           Transform any GitHub repository into professional documentation with AI-powered insights
         </Typography>
+
+        {/* Powered by Gemini and Open Source chips */}
+        <Stack 
+          direction={{ xs: 'column', sm: 'row' }} 
+          spacing={2} 
+          justifyContent="center" 
+          sx={{ mb: 4 }}
+        >
+          <Chip 
+            icon={
+              <Google 
+                sx={{ 
+                  color: '#ffffff !important',
+                  animation: 'geminiIconFloat 3s ease-in-out infinite',
+                  '@keyframes geminiIconFloat': {
+                    '0%, 100%': {
+                      transform: 'translateY(0px) scale(1)',
+                    },
+                    '50%': {
+                      transform: 'translateY(-2px) scale(1.1)',
+                    },
+                  },
+                }} 
+              />
+            }
+            label="Powered by Gemini AI"
+            size="small"
+            sx={{ 
+              fontWeight: 600,
+              background: 'linear-gradient(-45deg, #3d3b8e, #5a2d7a, #7d4b9c, #2d5f8f)',
+              backgroundSize: '400% 400%',
+              animation: 'geminiChipGradient 6s ease infinite',
+              color: '#ffffff',
+              fontSize: '0.75rem',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              boxShadow: '0 4px 20px rgba(61, 59, 142, 0.3)',
+              transition: 'all 0.3s ease',
+              textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)',
+              '@keyframes geminiChipGradient': {
+                '0%': {
+                  backgroundPosition: '0% 50%',
+                },
+                '50%': {
+                  backgroundPosition: '100% 50%',
+                },
+                '100%': {
+                  backgroundPosition: '0% 50%',
+                },
+              },
+              '&:hover': {
+                transform: 'translateY(-2px) scale(1.05)',
+                boxShadow: '0 8px 30px rgba(61, 59, 142, 0.5)',
+                textShadow: '0 2px 4px rgba(0, 0, 0, 0.4)',
+              },
+            }}
+          />
+          <Chip 
+            icon={<GitScriptorIcon fontSize="small" animated variant="minimal" sx={{ color: '#2d2d2d !important' }} />}
+            label="Free & Open Source"
+            size="small"
+            sx={{ 
+              fontWeight: 600,
+              background: 'linear-gradient(-45deg, #d4787c, #e0b8c9, #e0b8c9, #e6c79d)',
+              backgroundSize: '400% 400%',
+              animation: 'openSourceGradient 6s ease infinite',
+              color: '#2d2d2d',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              boxShadow: '0 4px 15px rgba(212, 120, 124, 0.3)',
+              transition: 'all 0.3s ease',
+              '@keyframes openSourceGradient': {
+                '0%': {
+                  backgroundPosition: '0% 50%',
+                },
+                '50%': {
+                  backgroundPosition: '100% 50%',
+                },
+                '100%': {
+                  backgroundPosition: '0% 50%',
+                },
+              },
+              '&:hover': {
+                transform: 'translateY(-2px) scale(1.05)',
+                boxShadow: '0 8px 25px rgba(212, 120, 124, 0.5)',
+              },
+            }}
+          />
+        </Stack>
 
         {/* URL Input Section */}
         <Box sx={{ width: '100%', maxWidth: '800px', mx: 'auto', mb: 6 }}>
@@ -313,6 +343,18 @@ const HomePage: React.FC = () => {
                   px: 2,
                   textTransform: 'none',
                   transition: 'all 0.3s ease',
+                  outline: 'none !important',
+                  border: '1px solid rgba(0, 0, 0, 0.23)',
+                  '&:focus': {
+                    outline: 'none !important',
+                    boxShadow: 'none !important',
+                    border: '1px solid',
+                    borderColor: 'primary.main',
+                  },
+                  '&:focus-visible': {
+                    outline: 'none !important',
+                    boxShadow: 'none !important',
+                  },
                   '&:hover': {
                     transform: 'translateY(-2px) scale(1.02)',
                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
@@ -389,6 +431,18 @@ const HomePage: React.FC = () => {
                   px: 2,
                   textTransform: 'none',
                   transition: 'all 0.3s ease',
+                  outline: 'none !important',
+                  border: '1px solid rgba(0, 0, 0, 0.23)',
+                  '&:focus': {
+                    outline: 'none !important',
+                    boxShadow: 'none !important',
+                    border: '1px solid',
+                    borderColor: 'primary.main',
+                  },
+                  '&:focus-visible': {
+                    outline: 'none !important',
+                    boxShadow: 'none !important',
+                  },
                   '&:hover': {
                     transform: 'translateY(-2px) scale(1.02)',
                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
@@ -438,7 +492,22 @@ const HomePage: React.FC = () => {
           <Chip label="Documentation" variant="outlined" size="small" sx={{ color: 'text.secondary' }} />
           <Chip label="API Reference" variant="outlined" size="small" sx={{ color: 'text.secondary' }} />
           <Chip 
-            icon={<GitScriptorIcon fontSize="small" animated variant="minimal" />} 
+            icon={
+              <GitHub 
+                fontSize="small" 
+                sx={{
+                  animation: 'githubFloat 3s ease-in-out infinite',
+                  '@keyframes githubFloat': {
+                    '0%, 100%': {
+                      transform: 'translateY(0px) rotate(0deg)',
+                    },
+                    '50%': {
+                      transform: 'translateY(-3px) rotate(5deg)',
+                    },
+                  },
+                }}
+              />
+            } 
             label="GitHub" 
             variant="outlined" 
             size="small" 

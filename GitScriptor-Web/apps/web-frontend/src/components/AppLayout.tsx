@@ -117,7 +117,39 @@ const AppLayout: React.FC<AppLayoutProps> = ({
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <AppBar position="fixed" elevation={1} sx={{ backgroundColor: 'background.paper', color: 'text.primary' }}>
+      <AppBar 
+        position="fixed" 
+        elevation={1} 
+        sx={{ 
+          background: 'linear-gradient(-45deg, rgba(6, 182, 212, 0.25), rgba(59, 130, 246, 0.25), rgba(139, 92, 246, 0.25), rgba(236, 72, 153, 0.25), rgba(16, 185, 129, 0.25))',
+          backgroundColor: theme.palette.mode === 'dark' ? 'rgba(18, 18, 18, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+          backgroundSize: '500% 500%',
+          animation: 'navbarGradient 15s ease-in-out infinite',
+          backdropFilter: 'blur(12px)',
+          borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.1)'}`,
+          color: theme.palette.mode === 'dark' ? '#ffffff' : 'text.primary',
+          boxShadow: theme.palette.mode === 'dark' 
+            ? '0 4px 20px rgba(0, 0, 0, 0.3)' 
+            : '0 4px 20px rgba(0, 0, 0, 0.1)',
+          '@keyframes navbarGradient': {
+            '0%, 100%': {
+              backgroundPosition: '0% 50%',
+            },
+            '20%': {
+              backgroundPosition: '100% 50%',
+            },
+            '40%': {
+              backgroundPosition: '200% 50%',
+            },
+            '60%': {
+              backgroundPosition: '300% 50%',
+            },
+            '80%': {
+              backgroundPosition: '400% 50%',
+            },
+          },
+        }}
+      >
         <Toolbar>
           {/* Logo and Title */}
           <Box sx={{ display: 'flex', alignItems: 'center', mr: 4 }}>
@@ -132,7 +164,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({
               sx={{ 
                 fontWeight: 600,
                 cursor: 'pointer',
-                color: 'text.primary'
+                color: theme.palette.mode === 'dark' ? '#ffffff' : 'text.primary'
               }}
               onClick={() => navigate('/')}
             >
@@ -150,7 +182,13 @@ const AppLayout: React.FC<AppLayoutProps> = ({
                   onClick={() => handleNavigation(item.path)}
                   variant={location.pathname === item.path ? 'contained' : 'text'}
                   size="small"
-                  sx={{ textTransform: 'none' }}
+                  sx={{ 
+                    textTransform: 'none',
+                    color: theme.palette.mode === 'dark' ? '#ffffff' : 'inherit',
+                    '&:hover': {
+                      backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.04)',
+                    }
+                  }}
                 >
                   {item.label}
                 </Button>
