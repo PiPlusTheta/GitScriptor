@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "gitscriptor_core"
+version = "0.1.0"
+description = "Core README generation functionality for GitScriptor"
+authors = ["GitScriptor Team"]
+packages = [{include = "gitscriptor_core", from = "."}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+requests = "^2.31.0"
+GitPython = "^3.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
