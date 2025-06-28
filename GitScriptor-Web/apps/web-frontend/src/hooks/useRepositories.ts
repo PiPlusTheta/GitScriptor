@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { api, ApiError } from '../services/api'
+import { useAuth } from '../contexts/AuthContext'
 
 // Query keys for React Query
 export const repositoryKeys = {
@@ -18,11 +19,13 @@ export const useUserRepositories = (params: {
   page?: number
   per_page?: number
 } = {}) => {
+  const { isAuthenticated } = useAuth()
+  
   return useQuery({
     queryKey: repositoryKeys.list(JSON.stringify(params)),
     queryFn: () => api.getUserRepositories(params),
     staleTime: 5 * 60 * 1000, // 5 minutes
-    enabled: true, // Will be controlled by auth context
+    enabled: isAuthenticated, // Only fetch if user is authenticated
   })
 }
 
@@ -42,9 +45,8 @@ export const useSyncRepositories = () => {
 
   return useMutation({
     mutationFn: async () => {
-      // This would call an API endpoint to sync repos from GitHub
-      // For now, we'll just invalidate the cache to refetch
-      return { success: true }
+      const result = await api.syncRepositories()
+      return result
     },
     onSuccess: () => {
       // Invalidate and refetch repositories

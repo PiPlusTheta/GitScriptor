@@ -34,6 +34,11 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Vite
+.vite/
+node_modules/.vite/
+**/node_modules/.vite/
+
 # OS
 .DS_Store
 Thumbs.db

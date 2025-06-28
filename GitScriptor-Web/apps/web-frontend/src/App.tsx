@@ -8,6 +8,7 @@ import InsightsPage from './pages/InsightsPage'
 import HistoryPage from './pages/HistoryPage'
 import SettingsPage from './pages/SettingsPage'
 import AuthCallbackPage from './pages/AuthCallbackPage'
+import TokenExpiryWarning from './components/TokenExpiryWarning'
 import { useAuth } from './contexts/AuthContext'
 import { DynamicFavicon } from './utils/favicon'
 
@@ -21,6 +22,7 @@ function App() {
 
   return (
     <Router>
+      <TokenExpiryWarning />
       <Routes>
         <Route 
           path="/*" 

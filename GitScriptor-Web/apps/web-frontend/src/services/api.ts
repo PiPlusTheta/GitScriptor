@@ -88,14 +88,32 @@ class GitScriptorAPI {
 
   setAuthToken(token: string) {
     this.authToken = token
+    console.log('API: Auth token set')
   }
 
   clearAuthToken() {
     this.authToken = undefined
+    console.log('API: Auth token cleared')
   }
 
   getConfig() {
     return this.config
+  }
+
+  // Check if token is nearing expiry (useful for proactive warnings)
+  isTokenNearExpiry(): boolean {
+    try {
+      const tokenMetadata = localStorage.getItem('gitscriptor_token_metadata')
+      if (!tokenMetadata) return false
+      
+      const metadata = JSON.parse(tokenMetadata)
+      const tokenAge = (Date.now() - metadata.timestamp) / (1000 * 60 * 60 * 24) // days
+      
+      // Warn if token is older than 28 days (2 days before 30 day expiry)
+      return tokenAge > 28
+    } catch {
+      return false
+    }
   }
 
   private async request<T>(
@@ -139,7 +157,8 @@ class GitScriptorAPI {
         // Categorize error types based on status codes
         if (response.status === 401) {
           error.type = 'auth'
-          error.message = 'Authentication required'
+          error.message = 'Authentication required - please sign in again'
+          console.log('API: 401 error - token may be expired')
         } else if (response.status === 403) {
           error.type = 'auth'
           error.message = 'Access forbidden'
@@ -220,6 +239,23 @@ class GitScriptorAPI {
       method: 'PUT',
       body: JSON.stringify(updates),
     })
+  }
+
+  // User Settings
+  async getUserSettings(): Promise<any> {
+    return this.request('/user/settings')
+  }
+
+  async updateUserSettings(updates: any): Promise<any> {
+    return this.request('/user/settings', {
+      method: 'PUT',
+      body: JSON.stringify(updates),
+    })
+  }
+
+  // User Profile Extended
+  async getUserProfile(): Promise<any> {
+    return this.request('/user/profile')
   }
 
   // Repositories
@@ -307,19 +343,21 @@ export const api = new GitScriptorAPI(apiConfig)
 
 // Initialize API with any stored auth token
 const initializeAPI = () => {
-  const storedToken = localStorage.getItem('auth_token')
+  const storedToken = localStorage.getItem('gitscriptor_auth_token')
+  console.log('API Initialization: Token found in localStorage:', !!storedToken)
+  
   if (storedToken) {
     try {
       // Token is stored directly as a string
       api.setAuthToken(storedToken)
+      console.log('API Initialization: Token loaded successfully')
     } catch (error) {
-      console.warn('Invalid stored auth token, clearing...')
-      localStorage.removeItem('auth_token')
+      console.warn('Invalid stored auth token, clearing...', error)
+      localStorage.removeItem('gitscriptor_auth_token')
+      localStorage.removeItem('auth_mode')
     }
   }
 }
 
-// Initialize on import
-initializeAPI()
 // Initialize on import
 initializeAPI()

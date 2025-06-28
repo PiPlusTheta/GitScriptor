@@ -24,19 +24,32 @@ import {
   AutoAwesome,
 } from '@mui/icons-material'
 import { useAuth } from '../contexts/AuthContext'
-import { useUserRepositories } from '../hooks/useRepositories'
+import { useUserRepositories, useSyncRepositories } from '../hooks/useRepositories'
 import { useGenerateReadme } from '../hooks/useGenerateReadme'
 
 const ReposPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('')
-  const { isAuthenticated, isGuest, login } = useAuth()
+  const { isAuthenticated, isGuest, login, isLoading: authLoading } = useAuth()
   const generateReadme = useGenerateReadme()
+  const syncRepositories = useSyncRepositories()
   
+  // Debug: Log authentication state
+  console.log('ReposPage - Auth state:', { isAuthenticated, isGuest, authLoading })
+  
+  // Always call the hook but it will only fetch when enabled (when authenticated)
   const { data: reposData, isLoading, error } = useUserRepositories({
     per_page: 50,
     sort: 'updated'
   })
-
+  
+  // Debug: Log API response
+  console.log('ReposPage - Repos data:', { reposData, isLoading, error })
+  console.log('ReposPage - Repos array length:', reposData?.repositories?.length)
+  console.log('ReposPage - Raw reposData type:', typeof reposData)
+  console.log('ReposPage - Raw reposData structure:', reposData)
+  console.log('ReposPage - Is reposData an array?', Array.isArray(reposData))
+  console.log('ReposPage - reposData keys:', reposData ? Object.keys(reposData) : 'undefined')
+  
   const handleGenerateReadme = (repoUrl: string) => {
     generateReadme.mutate({ repo_url: repoUrl })
   }
@@ -45,12 +58,28 @@ const ReposPage: React.FC = () => {
     login()
   }
 
-  // Filter repositories based on search term
-  const filteredRepos = reposData?.repositories?.filter(repo =>
-    repo.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    repo.description?.toLowerCase().includes(searchTerm.toLowerCase())
-  ) || []
+  const handleSyncRepositories = async () => {
+    try {
+      await syncRepositories.mutateAsync()
+    } catch (error) {
+      console.error('Failed to sync repositories:', error)
+      // You could add a toast notification here
+    }
+  }
 
+  // Show loading while authentication is being determined
+  if (authLoading) {
+    return (
+      <Container maxWidth="lg" sx={{ py: 4, textAlign: 'center' }}>
+        <CircularProgress />
+        <Typography variant="body1" sx={{ mt: 2 }}>
+          Checking authentication...
+        </Typography>
+      </Container>
+    )
+  }
+
+  // Check authentication BEFORE showing main content
   if (!isAuthenticated && !isGuest) {
     return (
       <Container maxWidth="sm" sx={{ mt: 8, textAlign: 'center' }}>
@@ -82,16 +111,64 @@ const ReposPage: React.FC = () => {
       </Container>
     )
   }
+  
+  // Show loading state for repositories
+  if (isLoading) {
+    return (
+      <Container maxWidth="lg" sx={{ py: 4, textAlign: 'center' }}>
+        <CircularProgress />
+        <Typography variant="body1" sx={{ mt: 2 }}>
+          Loading repositories...
+        </Typography>
+      </Container>
+    )
+  }
+
+  // Show error state if API call failed
+  if (error) {
+    return (
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Alert severity="error" sx={{ mb: 4 }}>
+          Failed to load repositories: {(error as any)?.message || 'Please try signing in again'}
+        </Alert>
+        {!isAuthenticated && (
+          <Box sx={{ textAlign: 'center', mt: 4 }}>
+            <Button variant="contained" onClick={handleSignIn}>
+              Sign in with GitHub
+            </Button>
+          </Box>
+        )}
+      </Container>
+    )
+  }
+
+  // Filter repositories based on search term
+  // Handle both possible response structures: { repositories: [...] } or [...]
+  const repositories = Array.isArray(reposData) ? reposData : reposData?.repositories || []
+  const filteredRepos = repositories.filter(repo =>
+    repo.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    repo.description?.toLowerCase().includes(searchTerm.toLowerCase())
+  ) || []
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" gutterBottom>
-          Your Repositories
-        </Typography>
-        <Typography variant="body1" color="text.secondary">
-          Select a repository to generate or update its README
-        </Typography>
+      <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <Box>
+          <Typography variant="h4" gutterBottom>
+            Your Repositories
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            Select a repository to generate or update its README
+          </Typography>
+        </Box>
+        <Button
+          variant="outlined"
+          onClick={handleSyncRepositories}
+          disabled={syncRepositories.isPending}
+          size="small"
+        >
+          {syncRepositories.isPending ? 'Syncing...' : 'Sync from GitHub'}
+        </Button>
       </Box>
 
       {/* Search */}
@@ -212,13 +289,25 @@ const ReposPage: React.FC = () => {
       )}
 
       {/* No repositories */}
-      {!isLoading && !error && reposData?.repositories?.length === 0 && (
+      {!isLoading && !error && repositories.length === 0 && (
         <Box sx={{ textAlign: 'center', py: 4 }}>
-          <Typography variant="h6" color="text.secondary">
+          <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
             No repositories found
           </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            Sync your repositories from GitHub to get started
+          </Typography>
+          <Button
+            variant="contained"
+            onClick={handleSyncRepositories}
+            disabled={syncRepositories.isPending}
+            size="large"
+            sx={{ mb: 2 }}
+          >
+            {syncRepositories.isPending ? 'Syncing...' : 'Sync Repositories from GitHub'}
+          </Button>
           <Typography variant="body2" color="text.secondary">
-            Create your first repository on GitHub to get started
+            This will import all your GitHub repositories
           </Typography>
         </Box>
       )}
